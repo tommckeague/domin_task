@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+
+  nextjs-app:
+    build:
+      dockerfile: Dockerfile
+      context: ./nextjs-app
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./nextjs-app:/app
+      - /app/node_modules
+      - /app/dist
+
+  fastapi-api:
+    build:
+      dockerfile: Dockerfile
+      context: ./fastapi-api
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - timescale-db
+
+  timescale-db:
+    image: timescale/timescaledb-ha:pg14-latest
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./timescale-db/volume:/home/postgres/pgdata/data
+    command: bash -c "chown -R postgres:postgres /home/postgres/pgdata/data && docker-entrypoint.sh postgres"

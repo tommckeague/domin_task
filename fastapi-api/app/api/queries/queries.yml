@@ -1,0 +1,5 @@
+CONNECT_TO_DBTEST: SELECT 1;
+GET_SERIAL_NUMBERS_QUERY: SELECT serial_number FROM serial_numbers ORDER BY date_entered DESC;
+GET_TEST_SELECTION_OPTIONS_FOR_SERIAL_NUMBER_QUERY: SELECT DISTINCT test_type, test_id, test_start_timestamp, test_end_timestamp, notes FROM completed_tests WHERE serial_number = '{serial_number}' ORDER BY test_start_timestamp DESC;
+GET_TEST_DATA_QUERY: SELECT EXTRACT(EPOCH FROM timestamp)::numeric(20,6) + EXTRACT(MICROSECONDS FROM timestamp)::numeric(20,6) / 1000000.0 as timestamp, value, unit, datapoint_id FROM {test_table} WHERE test_id = {test_id} AND sensor_type = '{sensor_type}' ORDER BY timestamp ASC;
+GET_SHIPPING_STATUS_FOR_SERIAL_QUERY: SELECT * FROM shipping WHERE serial_number = '{serial_number}';
